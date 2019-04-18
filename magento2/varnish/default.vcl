@@ -195,13 +195,13 @@ sub vcl_deliver {
         set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
     }
 
-    unset resp.http.X-Magento-Debug;
-    unset resp.http.X-Magento-Tags;
-    unset resp.http.X-Powered-By;
-    unset resp.http.Server;
-    unset resp.http.X-Varnish;
-    unset resp.http.Via;
-    unset resp.http.Link;
+    #unset resp.http.X-Magento-Debug;
+    #unset resp.http.X-Magento-Tags;
+    #unset resp.http.X-Powered-By;
+    #unset resp.http.Server;
+    #unset resp.http.X-Varnish;
+    #unset resp.http.Via;
+    #unset resp.http.Link;
 }
 
 sub vcl_hit {

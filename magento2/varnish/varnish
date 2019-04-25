@@ -49,6 +49,8 @@ DAEMON_OPTS="-a :80 \
              -f /etc/varnish/default.vcl \
              -p http_resp_hdr_len=65536 \
              -p http_resp_size=98304 \
+             -p workspace_client=256k \
+             -p workspace_backend=256k \
              -s malloc,256m \
 			 -S /etc/varnish/secret"
 

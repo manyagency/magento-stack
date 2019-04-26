@@ -107,6 +107,10 @@ sub vcl_recv {
         #unset req.http.Cookie;
     }
 
+    if (req.url ~ "^/ADMIN_PLACEHOLDER/") {
+        return (pass);
+    }
+
     return (hash);
 }
 

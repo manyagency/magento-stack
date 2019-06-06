@@ -22,8 +22,6 @@ acl purge {
 }
 
 sub vcl_recv {
-    
-    set req.http.X-Forwarded-For = client.ip;
 
     if (req.method == "PURGE") {
         if (client.ip !~ purge) {
@@ -113,6 +111,9 @@ sub vcl_recv {
     if (req.url ~ "^/ADMIN_PLACEHOLDER/") {
         return (pass);
     }
+
+    unset req.http.X-Forwarded-For;
+    set req.http.X-Forwarded-For = client.ip;
 
     return (hash);
 }

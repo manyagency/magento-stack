@@ -22,6 +22,9 @@ acl purge {
 }
 
 sub vcl_recv {
+    
+    set req.http.X-Forwarded-For = client.ip;
+
     if (req.method == "PURGE") {
         if (client.ip !~ purge) {
             return (synth(405, "Method not allowed"));

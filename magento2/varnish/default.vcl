@@ -23,6 +23,8 @@ acl purge {
 
 sub vcl_recv {
 
+    set req.http.x-forwarded-for = regsub ( req.http.x-forwarded-for, "^(([0-9]{1,3}\.){3}[0-9]{1,3})(.*)", "\1" );
+
     if (req.method == "PURGE") {
         if (client.ip !~ purge) {
             return (synth(405, "Method not allowed"));
@@ -111,8 +113,6 @@ sub vcl_recv {
     if (req.url ~ "^/ADMIN_PLACEHOLDER/") {
         return (pass);
     }
-
-    set req.http.x-forwarded-for = regsub ( req.http.x-forwarded-for, "^(([0-9]{1,3}\.){3}[0-9]{1,3})(.*)", "\1" );
 
     return (hash);
 }

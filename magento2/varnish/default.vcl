@@ -112,8 +112,8 @@ sub vcl_recv {
         return (pass);
     }
 
-    unset req.http.X-Forwarded-For;
-    set req.http.X-Forwarded-For = client.ip;
+    #unset req.http.X-Forwarded-For;
+    #set req.http.X-Forwarded-For = client.ip;
 
     return (hash);
 }

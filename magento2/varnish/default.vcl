@@ -112,8 +112,7 @@ sub vcl_recv {
         return (pass);
     }
 
-    #unset req.http.X-Forwarded-For;
-    #set req.http.X-Forwarded-For = client.ip;
+    set req.http.x-forwarded-for = regsub ( req.http.x-forwarded-for, "^(([0-9]{1,3}\.){3}[0-9]{1,3})(.*)", "\1" );
 
     return (hash);
 }

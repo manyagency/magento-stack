@@ -23,7 +23,7 @@ acl purge {
 
 sub vcl_recv {
 
-    set req.http.X-Forwarded-For = regsub ( req.http.x-forwarded-for, "^(([0-9]{1,3}\.){3}[0-9]{1,3})(.*)", "\1" );
+    set req.http.X-Forwarded-For = regsub ( req.http.X-Forwarded-For, "^(([0-9]{1,3}\.){3}[0-9]{1,3})(.*)", "\1" );
 
     if (req.method == "PURGE") {
         if (client.ip !~ purge) {

@@ -19,9 +19,16 @@ backend default {
 
 acl purge {
     "localhost";
+    "127.0.0.1";
 }
 
 sub vcl_recv {
+
+    # Tell PageSpeed not to use optimizations specific to this request.
+    set req.http.PS-CapabilityList = "fully general optimizations only";
+
+    # Don't allow external entities to force beaconing.
+    unset req.http.PS-ShouldBeacon;
 
     set req.http.X-Forwarded-For = regsub ( req.http.X-Forwarded-For, "^(([0-9]{1,3}\.){3}[0-9]{1,3})(.*)", "\1" );
 
@@ -152,6 +159,11 @@ sub vcl_backend_response {
         set beresp.http.X-Magento-Cache-Control = beresp.http.Cache-Control;
     }
 
+    if (beresp.http.Content-Type ~ "text/html") {
+        unset beresp.http.Cache-Control;
+        set beresp.http.Cache-Control = "no-cache, max-age=0";
+    }
+
     # cache only successfully responses and 404s
     if (beresp.status != 200 && beresp.status != 404) {
         set beresp.ttl = 0s;
@@ -217,6 +229,10 @@ sub vcl_hit {
         return (deliver);
     }
     if (std.healthy(req.backend_hint)) {
+        if (std.random(0, 100) < 5) {
+            set req.http.PS-ShouldBeacon = "SECRETKEY";
+            return (pass);
+        }
         if (obj.ttl + 300s > 0s) {
             # Hit after TTL expiration, but within grace period
             set req.http.grace = "normal (healthy server)";
@@ -230,4 +246,14 @@ sub vcl_hit {
         set req.http.grace = "unlimited (unhealthy server)";
         return (deliver);
     }
+}
+
+sub vcl_miss {
+
+    # Instrument 25% of cache misses.
+    if (std.random(0, 100) < 25) {
+        set req.http.PS-ShouldBeacon = "SECRETKEY";
+        return (pass);
+    }
+
 }

@@ -159,11 +159,6 @@ sub vcl_backend_response {
         set beresp.http.X-Magento-Cache-Control = beresp.http.Cache-Control;
     }
 
-    if (beresp.http.Content-Type ~ "text/html") {
-        unset beresp.http.Cache-Control;
-        set beresp.http.Cache-Control = "no-cache, max-age=0";
-    }
-
     # cache only successfully responses and 404s
     if (beresp.status != 200 && beresp.status != 404) {
         set beresp.ttl = 0s;
@@ -190,6 +185,11 @@ sub vcl_backend_response {
        # Mark as Hit-For-Pass for the next 2 minutes
         set beresp.ttl = 120s;
         set beresp.uncacheable = true;
+    }
+
+    if (beresp.http.Content-Type ~ "text/html") {
+        unset beresp.http.Cache-Control;
+        set beresp.http.Cache-Control = "no-cache, max-age=0";
     }
 
     return (deliver);

@@ -183,7 +183,7 @@ sub vcl_backend_response {
        beresp.http.Cache-Control ~ "no-cache|no-store") ||
        beresp.http.Vary == "*") {
        # Mark as Hit-For-Pass for the next 2 minutes
-        set beresp.ttl = 120s;
+        set beresp.ttl = 300s;
         set beresp.uncacheable = true;
     }
 

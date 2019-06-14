@@ -187,11 +187,6 @@ sub vcl_backend_response {
         set beresp.uncacheable = true;
     }
 
-    if (beresp.http.Content-Type ~ "text/html") {
-        unset beresp.http.Cache-Control;
-        set beresp.http.Cache-Control = "no-cache, max-age=0";
-    }
-
     return (deliver);
 }
 

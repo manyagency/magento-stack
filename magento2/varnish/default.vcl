@@ -191,15 +191,12 @@ sub vcl_backend_response {
 }
 
 sub vcl_deliver {
-    if (resp.http.X-Magento-Debug) {
-        if (resp.http.x-varnish ~ " ") {
-            set resp.http.X-Magento-Cache-Debug = "HIT";
-            set resp.http.Grace = req.http.grace;
-        } else {
-            set resp.http.X-Magento-Cache-Debug = "MISS";
-        }
+
+    if (resp.http.x-varnish ~ " ") {
+        set resp.http.X-Magento-Cache-Debug = "HIT";
+        set resp.http.Grace = req.http.grace;
     } else {
-        unset resp.http.Age;
+        set resp.http.X-Magento-Cache-Debug = "MISS";
     }
 
     # Not letting browser to cache non-static files.
@@ -210,12 +207,14 @@ sub vcl_deliver {
     }
 
     unset resp.http.X-Magento-Debug;
+    unset resp.http.X-Magento-Cache-Debug;
     unset resp.http.X-Magento-Tags;
     unset resp.http.X-Powered-By;
     unset resp.http.Server;
     unset resp.http.X-Varnish;
     unset resp.http.Via;
     unset resp.http.Link;
+    unset resp.http.Age;
 }
 
 sub vcl_hit {
